@@ -1,6 +1,6 @@
 #include "philo.h"
 
-void	print_action(t_philo *philo, char	*str)
+void	print_action(t_philo *philo, t_rules *rules, char	*str)
 {
 	int	i;
 
@@ -24,9 +24,9 @@ int	find_min(t_philo *philo)
 		return(philo->r_fork);
 }
 
-void	philo_do(t_philo *philo, int r, char *str)
+void	philo_do(t_philo *philo, t_rules *rules, int r, char *str)
 {
-	print_action(philo, str);
+	print_action(philo, rules, str);
 	ft_usleep(r);
 }
 

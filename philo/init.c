@@ -27,12 +27,15 @@ void	parse_arguments(t_rules *rules, char **av, int j)
 	rules->time_to_die = ft_atoi(av[2]);
 	rules->time_to_eat = ft_atoi(av[3]);
 	rules->time_to_sleep = ft_atoi(av[4]);
+	rules->philo_alive = 1;
 	rules->counter = 0;
+	rules->death_counter = 0;
 	if (j)
 		rules->nbr_of_eat = ft_atoi(av[5]);
 	else
 		rules->nbr_of_eat = -1;
 	rules->philo = (t_philo *) malloc (sizeof(t_philo) * rules->nbr_of_philo);
+	rules->death = malloc (sizeof(pthread_t));
 	rules->forks = (pthread_mutex_t *) malloc (sizeof(pthread_mutex_t) * rules->nbr_of_philo);
 	while (i < rules->nbr_of_philo)
 	{

@@ -1,30 +1,42 @@
 #include "philo.h"
 
-void	*routine(t_rules *rules)
+void	routine(t_rules *rules)
 {
 	int	i;
 
 	i = rules->counter;
 	rules->philo[i].start_time = get_time();
-	while (1)
+	while (rules->philo_alive)
 	{
-		pthread_mutex_lock(&rules->forks[find_max(&rules->philo[i])]);
-		pthread_mutex_lock(&rules->forks[find_min(&rules->philo[i])]);
-		print_action(&rules->philo[i], "has taken a fork");
-		print_action(&rules->philo[i], "has taken a fork");
-		philo_do(&rules->philo[i], rules->time_to_eat, "is eating");
-		pthread_mutex_unlock(&rules->forks[rules->philo[i].l_fork]);
-		pthread_mutex_unlock(&rules->forks[rules->philo[i].r_fork]);
-		philo_do(&rules->philo[i], rules->time_to_sleep, "is sleeping");
-		print_action(&rules->philo[i], "is thinking");
+		philo_eat(rules, &rules->philo[i]);
+		philo_do(&rules->philo[i], rules, rules->time_to_sleep, "is sleeping");
+		print_action(&rules->philo[i], rules, "is thinking");
+	}
+}
+
+void	death_c(t_rules *rules)
+{
+	int	i;
+
+	i = 0;
+	while(1)
+	{
+		while (i < rules->nbr_of_philo)
+		{
+			death_check(&rules->philo[i], rules);
+			i++;
+		}
+		i = 0;
 	}
 }
 
 void	creat_threads(t_rules *rules)
 {
 	int	i;
+	int	j;
 	
 	i = 0;
+	j = 0;
 	while (i < rules->nbr_of_philo)
 	{
 		pthread_create(&rules->philo[i].phil, NULL, (void *)routine, rules);
@@ -33,11 +45,14 @@ void	creat_threads(t_rules *rules)
 		i++;
 	}
 	i = 0;
+	pthread_create(&rules->death[j], NULL,(void *)death_c,rules);
+	j = 0;
 	while (i < rules->nbr_of_philo)
 	{
 		pthread_join(rules->philo[i].phil, NULL);
 		i++;
 	}
+		pthread_join(rules->death[j], NULL);
 }
 
 int	main(int ac, char	**av)

@@ -10,6 +10,6 @@ void	ft_usleep(int num)
 	while (start > current)
 	{
 		current = get_time();
-		usleep(10);
+		usleep(1);
 	}
 }
