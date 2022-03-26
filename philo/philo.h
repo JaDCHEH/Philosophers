@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cjad <marvin@42.fr>                        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/26 16:54:19 by cjad              #+#    #+#             */
+/*   Updated: 2022/03/26 16:54:23 by cjad             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 # include <stdlib.h>
@@ -6,26 +18,27 @@
 # include <stdio.h>
 # include <sys/time.h>
 
-int	ft_atoi(char	*str);
+int		ft_atoi(char	*str);
 
 typedef struct s_struct
 {
-	pthread_t 	phil;
+	pthread_t	phil;
 	int			philo_id;
 	int			l_fork;
 	int			r_fork;
 	int			start_time;
 	int			lst_meal;
 	int			philo_n_eat;
-} t_philo;
+}	t_philo;
 
 typedef struct s_st
 {
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	mulock;
-	t_philo 		*philo;
-	pthread_t 		*death;
+	t_philo			*philo;
+	pthread_t		*death;
 	int				death_counter;
+	int				all_ate;
 	int				nbr_of_philo;
 	int				time_to_die;
 	int				philo_alive;
@@ -33,17 +46,19 @@ typedef struct s_st
 	int				time_to_sleep;
 	int				nbr_of_eat;
 	int				counter;
-} t_rules;
+}	t_rules;
+
+int		find_max(t_philo *philo);
+int		find_min(t_philo *philo);
+int		get_time(void);
+int		meal_check(t_rules *rules);
 
 void	init_philo(t_rules *rules);
 void	parse_arguments(t_rules *rules, char **av, int j);
 void	print_action(t_philo *philo, t_rules *rules, char	*str);
-int		find_max(t_philo *philo);
-int		find_min(t_philo *philo);
 void	philo_do(t_philo *philo, t_rules *rules, int r, char *str);
 void	creat_threads(t_rules *rules);
-int		get_time(void);
-void	ft_usleep(int num);
+void	ft_usleep(int num, int a);
 void	philo_eat(t_rules *rules, t_philo *philo);
 void	death_check(t_philo *philo, t_rules *rules);
 
