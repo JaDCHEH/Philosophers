@@ -6,7 +6,7 @@
 /*   By: cjad <cjad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 16:53:52 by cjad              #+#    #+#             */
-/*   Updated: 2022/03/27 18:41:54 by cjad             ###   ########.fr       */
+/*   Updated: 2022/03/27 19:28:51 by cjad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,17 @@ void	philo_eat(t_rules *rules, t_philo *philo)
 		pthread_mutex_lock(&rules->forks[philo->r_fork]);
 		print_action(philo, rules, "has taken a fork");
 		philo->lst_meal = get_time() - philo->start_time;
-		print_action(philo, rules, "is eating");
 		pthread_mutex_lock(&rules->mulock);
+		print_action(philo, rules, "is eating");
 		philo->philo_n_eat++;
 		pthread_mutex_unlock(&rules->mulock);
-		if (rules->nbr_of_philo <= 20)
-			ft_usleep(rules->time_to_eat, 10);
-		else
-			usleep(rules->time_to_eat * 1000);
+		if(rules->philo_alive && !rules->all_ate)
+		{
+			if (rules->nbr_of_philo <= 20)
+				ft_usleep(rules->time_to_eat, 10);
+			else
+				usleep(rules->time_to_eat * 1000);
+		}
 		pthread_mutex_unlock(&rules->forks[philo->r_fork]);
 		pthread_mutex_unlock(&rules->forks[philo->l_fork]);
 	}
@@ -41,8 +44,8 @@ void	death_check(t_philo *philo, t_rules *rules)
 	i = get_time() - philo->start_time - philo->lst_meal;
 	if (i >= rules->time_to_die)
 	{
-		print_action(philo, rules, "has died");
 		pthread_mutex_lock(&rules->mulock);
+		print_action(philo, rules, "has died");
 		rules->philo_alive = 0;
 		pthread_mutex_unlock(&rules->mulock);
 	}

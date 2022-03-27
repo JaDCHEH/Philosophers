@@ -6,7 +6,7 @@
 /*   By: cjad <cjad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 16:54:19 by cjad              #+#    #+#             */
-/*   Updated: 2022/03/27 15:41:40 by cjad             ###   ########.fr       */
+/*   Updated: 2022/03/27 19:04:03 by cjad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ typedef struct s_st
 }	t_rules;
 
 int		ft_atoi(char	*str);
-int		find_max(t_philo *philo);
-int		find_min(t_philo *philo);
 int		get_time(void);
 int		meal_check(t_rules *rules);
 int		create_threads(t_rules *rules);
