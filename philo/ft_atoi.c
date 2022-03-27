@@ -6,20 +6,21 @@
 /*   By: cjad <cjad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 15:37:48 by cjad              #+#    #+#             */
-/*   Updated: 2022/03/26 16:43:58 by cjad             ###   ########.fr       */
+/*   Updated: 2022/03/27 15:59:36 by cjad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <limits.h>
 
-void	check(char c)
+int	check(char c)
 {
 	if (!(c >= '0' && c <= '9'))
 	{
-		write(2, "Error\n", 7);
-		exit(1);
+		printf("Error\nArgument is not numeric.\n");
+		return (-1);
 	}
+	return (0);
 }
 
 long	result(const char	*str, int i, int s)
@@ -29,43 +30,42 @@ long	result(const char	*str, int i, int s)
 
 	n = 0;
 	tmp = 0;
-	check(str[i]);
+	if (check(str[i]) < 0)
+		return (-1);
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		n = str[i] - '0' + n * 10;
 		if ((n > INT_MAX && n != 2147483648) || (n == 2147483648 && s == 1))
 		{
-			write(2, "Error\n", 7);
-			exit(1);
+			printf("Error\nNumber not an intiger.\n");
+			return (-1);
 		}
 		tmp = n;
 		i++;
 	}
 	if (str[i] != '\0')
 	{
-		write(2, "Error\n", 7);
-		exit(1);
+		printf("Error\nArgument is not numeric.\n");
+		return (-1);
 	}
 	return (n);
 }
 
-void	check_1(char *str)
+int	sign_check(char *str, int *s, int *i)
 {
-	int	a;
-
-	a = 0;
-	while (str[a])
+	if (str[*i] == '-' || str[*i] == '+')
 	{
-		if ((str[a] >= '\t' && str[a] <= '\r') || str[a] == ' '
-			|| (str[a] >= '0' && str[a] <= '9')
-			|| str[a] == '+')
-			a++;
-		else
-		{
-			write(2, "Error\n", 7);
-			exit(1);
-		}
+		if (str[*i] == '-')
+			*s = -*s;
+		(*i)++;
 	}
+	if ((str[*i] == '-' || str[*i] == '+')
+		|| (str[*i] >= '\t' && str[*i] <= '\r') || str[*i] == ' ')
+	{
+		printf("Error\nArgument is not numeric.\n");
+		return (-1);
+	}
+	return (0);
 }
 
 int	ft_atoi(char	*str)
@@ -77,15 +77,12 @@ int	ft_atoi(char	*str)
 	i = 0;
 	s = 1;
 	n = 0;
-	check_1(str);
 	while ((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
 		i++;
-	if (str[i] == '+'
-		|| (str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
-	{
-		write(2, "Error\n", 7);
-		exit(1);
-	}
-	n = result (str, i, s);
+	if (sign_check(&str[i], &s, &i) < 0)
+		return (-1);
+	n = result(str, i, s);
+	if (n < 0)
+		return (-1);
 	return (n * s);
 }

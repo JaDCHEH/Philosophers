@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cjad <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: cjad <cjad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 16:54:42 by cjad              #+#    #+#             */
-/*   Updated: 2022/03/26 16:54:43 by cjad             ###   ########.fr       */
+/*   Updated: 2022/03/27 15:50:53 by cjad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,19 @@ void	ft_usleep(int num, int a)
 	while (start > current)
 	{
 		current = get_time();
-		usleep(10);
+		usleep(a);
 	}
+}
+
+void	destroy_mutex(t_rules *rules)
+{
+	int	i;
+
+	i = 0;
+	while (i < rules->nbr_of_philo)
+	{
+		pthread_mutex_destroy(&rules->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&rules->mulock);
 }

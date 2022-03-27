@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cjad <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: cjad <cjad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 16:54:19 by cjad              #+#    #+#             */
-/*   Updated: 2022/03/26 16:54:23 by cjad             ###   ########.fr       */
+/*   Updated: 2022/03/27 15:41:40 by cjad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 # include <pthread.h>
 # include <stdio.h>
 # include <sys/time.h>
-
-int		ft_atoi(char	*str);
 
 typedef struct s_struct
 {
@@ -36,7 +34,7 @@ typedef struct s_st
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	mulock;
 	t_philo			*philo;
-	pthread_t		*death;
+	pthread_t		death;
 	int				death_counter;
 	int				all_ate;
 	int				nbr_of_philo;
@@ -48,16 +46,19 @@ typedef struct s_st
 	int				counter;
 }	t_rules;
 
+int		ft_atoi(char	*str);
 int		find_max(t_philo *philo);
 int		find_min(t_philo *philo);
 int		get_time(void);
 int		meal_check(t_rules *rules);
+int		create_threads(t_rules *rules);
+int		join_threads(t_rules *rules);
+int		philosophers(t_rules *rules, char **av, int j);
+int		init_philo(t_rules *rules);
 
-void	init_philo(t_rules *rules);
-void	parse_arguments(t_rules *rules, char **av, int j);
+void	destroy_mutex(t_rules *rules);
 void	print_action(t_philo *philo, t_rules *rules, char	*str);
 void	philo_do(t_philo *philo, t_rules *rules, int r, char *str);
-void	creat_threads(t_rules *rules);
 void	ft_usleep(int num, int a);
 void	philo_eat(t_rules *rules, t_philo *philo);
 void	death_check(t_philo *philo, t_rules *rules);
