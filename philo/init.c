@@ -6,7 +6,7 @@
 /*   By: cjad <cjad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 16:54:03 by cjad              #+#    #+#             */
-/*   Updated: 2022/03/27 15:41:03 by cjad             ###   ########.fr       */
+/*   Updated: 2022/03/28 18:41:42 by cjad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,8 @@ int	init_philo(t_rules *rules)
 		rules->philo[i].l_fork = i % rules->nbr_of_philo;
 		rules->philo[i].r_fork = (i + 1) % rules->nbr_of_philo;
 		rules->philo[i].philo_n_eat = 0;
+		rules->philo->start_time = 0;
 		rules->philo[i].lst_meal = 0;
-		rules->philo[i].phil = malloc (sizeof(pthread_t));
-		if (!rules->philo[i].phil)
-			return (1);
 		i++;
 	}
 	return (0);
@@ -75,9 +73,8 @@ int	philosophers(t_rules *rules, char **av, int j)
 	if (init_1(rules, av, j))
 		return (1);
 	rules->philo = malloc (sizeof(t_philo) * rules->nbr_of_philo);
-	rules->death = malloc (sizeof(pthread_t));
 	rules->forks = malloc (sizeof(pthread_mutex_t) * rules->nbr_of_philo);
-	if (!rules->philo || !rules->death || !rules->forks)
+	if (!rules->philo || !rules->forks)
 		return (1);
 	while (i < rules->nbr_of_philo)
 	{
@@ -85,6 +82,7 @@ int	philosophers(t_rules *rules, char **av, int j)
 		i++;
 	}
 	pthread_mutex_init(&rules->mulock, NULL);
+	pthread_mutex_init(&rules->end_lock, NULL);
 	if (init_philo(rules))
 		return (1);
 	if (create_threads(rules))

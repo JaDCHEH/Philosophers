@@ -6,33 +6,34 @@
 /*   By: cjad <cjad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 16:54:33 by cjad              #+#    #+#             */
-/*   Updated: 2022/03/27 19:28:57 by cjad             ###   ########.fr       */
+/*   Updated: 2022/03/28 18:43:47 by cjad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	print_action(t_philo *philo, t_rules *rules, char	*str)
+void	print_action(t_philo *philo, char	*str)
 {
 	int	i;
 
 	i = get_time() - philo->start_time;
-	if (rules->philo_alive && !rules->all_ate)
-		printf("%d %d %s \n", i, philo->philo_id, str);
+	printf("%d %d %s \n", i, philo->philo_id, str);
 }
 
 void	philo_do(t_philo *philo, t_rules *rules, int r, char *str)
 {
-	if(rules->philo_alive && !rules->all_ate)
+	pthread_mutex_lock(&rules->end_lock);
+	if (rules->philo_alive && rules->all_ate == 0)
 	{
-		pthread_mutex_lock(&rules->mulock);
-		print_action(philo, rules, str);
-		pthread_mutex_unlock(&rules->mulock);
-		if (rules->nbr_of_philo <= 20)
+		print_action(philo, str);
+		pthread_mutex_unlock(&rules->end_lock);
+		if (rules->nbr_of_philo <= 20 && r)
 			ft_usleep(r, 10);
-		else
+		else if (r)
 			usleep(r * 1000);
 	}
+	else
+		pthread_mutex_unlock(&rules->end_lock);
 }
 
 int	get_time(void)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   threads_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cjad <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: cjad <cjad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 15:45:02 by cjad              #+#    #+#             */
-/*   Updated: 2022/03/27 15:45:04 by cjad             ###   ########.fr       */
+/*   Updated: 2022/03/28 18:45:28 by cjad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,20 @@ void	routine(t_rules *rules)
 
 	pthread_mutex_lock(&rules->mulock);
 	i = rules->counter;
-	pthread_mutex_unlock(&rules->mulock);
+	pthread_mutex_lock(&rules->end_lock);
 	rules->philo[i].start_time = get_time();
-	while (rules->philo_alive && !rules->all_ate)
+	pthread_mutex_unlock(&rules->mulock);
+	while (rules->philo_alive && rules->all_ate == 0)
 	{
+		pthread_mutex_unlock(&rules->end_lock);
 		philo_eat(rules, &rules->philo[i]);
 		if (rules->nbr_of_philo == 1)
 			break ;
 		philo_do(&rules->philo[i], rules, rules->time_to_sleep, "is sleeping");
-		print_action(&rules->philo[i], rules, "is thinking");
+		philo_do(&rules->philo[i], rules, 0, "is thinking");
+		pthread_mutex_lock(&rules->end_lock);
 	}
+	pthread_mutex_unlock(&rules->end_lock);
 }
 
 void	death_c(t_rules *rules)
@@ -44,9 +48,10 @@ void	death_c(t_rules *rules)
 		}
 		if (meal_check(rules))
 		{
-			pthread_mutex_lock(&rules->mulock);
+			pthread_mutex_lock(&rules->end_lock);
+			printf("All philosophers ate %d times.\n", rules->nbr_of_eat);
 			rules->all_ate = 1;
-			pthread_mutex_unlock(&rules->mulock);
+			pthread_mutex_unlock(&rules->end_lock);
 		}
 	}
 }

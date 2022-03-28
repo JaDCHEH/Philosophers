@@ -6,7 +6,7 @@
 /*   By: cjad <cjad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/26 16:54:19 by cjad              #+#    #+#             */
-/*   Updated: 2022/03/27 19:04:03 by cjad             ###   ########.fr       */
+/*   Updated: 2022/03/28 18:45:57 by cjad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,16 @@ typedef struct s_struct
 	int			philo_id;
 	int			l_fork;
 	int			r_fork;
-	int			start_time;
 	int			lst_meal;
 	int			philo_n_eat;
+	int			start_time;
 }	t_philo;
 
 typedef struct s_st
 {
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	mulock;
+	pthread_mutex_t	end_lock;
 	t_philo			*philo;
 	pthread_t		death;
 	int				death_counter;
@@ -55,7 +56,7 @@ int		philosophers(t_rules *rules, char **av, int j);
 int		init_philo(t_rules *rules);
 
 void	destroy_mutex(t_rules *rules);
-void	print_action(t_philo *philo, t_rules *rules, char	*str);
+void	print_action(t_philo *philo, char	*str);
 void	philo_do(t_philo *philo, t_rules *rules, int r, char *str);
 void	ft_usleep(int num, int a);
 void	philo_eat(t_rules *rules, t_philo *philo);
